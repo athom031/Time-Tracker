@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Time Tracker</string>
+    <string name="time_tracker_title">Time Tracker</string>
+    <string name="sigmalogo">sigmaLogo</string>
+    <string name="shake_activated">Shake activated</string>
+    <string name="togglebutton">ToggleButton</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="time_tracked_dialog">Time tracked on </string>
+    <string name="time_tracked_confirm">OK</string>
+</resources>
