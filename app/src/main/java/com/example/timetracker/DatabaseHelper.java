@@ -32,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTableStatement = "CREATE TABLE " + TIME_TRACKER_TABLE + " (ID INTEGER PRIMARY )";
+        String createTableStatement = "CREATE TABLE " + TIME_TRACKER_TABLE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, YEAR INTERGER, MONTH INTEGER, DAY INTEGER, MINUTES INTEGER)";
 
         db.execSQL(createTableStatement);
     }

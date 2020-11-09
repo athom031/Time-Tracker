@@ -3,17 +3,21 @@ package com.example.timetracker;
 public class TimeTrackingModel {
     // ------------------- CLASS VARIABLES ------------------- \\
     private int id;
-    private String date;
+    private int year;
+    private int month;
+    private int day;
     private int minutes;
 
     // --------------------- CONSTRUCTORS --------------------- \\
 
     /*  Parameterized Constructor
-     *  @param int id, String date, int minutesParams
+     *  @param int id, int year, int month, int day, String date, int minutesParams
      */
-    public TimeTrackingModel(int id, String date, int minutes) {
+    public TimeTrackingModel(int id, int year, int month, int day, int minutes) {
         this.id = id;
-        this.date = date;
+        this.year = year;
+        this.month = month;
+        this.day = day;
         this.minutes = minutes;
     }
 
@@ -25,7 +29,11 @@ public class TimeTrackingModel {
 
     public int getId() { return id; }
 
-    public String getDate() { return date; }
+    public int getYear() { return year; }
+
+    public int getMonth() { return month; }
+
+    public int getDay() { return day; }
 
     public int getMinutes() { return minutes; }
 
@@ -33,7 +41,11 @@ public class TimeTrackingModel {
 
     public void setId(int id) { this.id = id; }
 
-    public void setDate(String date) { this.date = date; }
+    public void setYear(int year) { this.year = year; }
+
+    public void setMonth(int month) { this.month = month; }
+
+    public void setDay(int day) { this.day = day; }
 
     public void setMinutes(int minutes) { this.minutes = minutes; }
 
@@ -44,7 +56,9 @@ public class TimeTrackingModel {
     public String toString() {
         return "TimeTrackingModel{" +
                 "id=" + id +
-                ", date='" + date + '\'' +
+                ", year=" + year +
+                ", month=" + month +
+                ", day=" + day +
                 ", minutes=" + minutes +
                 '}';
     }
