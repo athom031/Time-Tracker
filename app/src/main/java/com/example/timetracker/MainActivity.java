@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     // ------------------ DATE FORMATS ------------------- \\
     //SimpleDateFormat sdf_tt_date    = new SimpleDateFormat("dd MMM yyyy");
     SimpleDateFormat sdf_log_checks = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+    SimpleDateFormat sdf_str_to_int = new SimpleDateFormat("dd/MM/yyyy");
 
     // ---------------- TIMING VARIABLES ----------------- \\
     public Date start_time_stamp;
@@ -77,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
         tt_calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
-                Log.i(CALENDAR, "" + year + month + day);
+                //month + 1
+                Log.i(CALENDAR, "" + year + (month + 1) + day);
             }
         });
 
@@ -102,8 +104,17 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TOGGLE, "This shift time: " + shiftTotal);
 
                     //put shift for user in the table appropriately
-                    temp = sdf_tt_date.format(new Date());
-                    TimeTrackingModel timeTrackingModel = new TimeTrackingModel(-1, temp, shiftTotal);
+
+                    String strToInt = sdf_str_to_int.format(new Date());
+                    String[] strToIntSplit = strToInt.split("/");
+
+                    int day   = Integer.parseInt(strToIntSplit[0]);
+                    int month = Integer.parseInt(strToIntSplit[1]);
+                    int year  = Integer.parseInt(strToIntSplit[2]);
+
+                    Log.i(TOGGLE, day + " " + month +  " " + year);
+
+                    TimeTrackingModel timeTrackingModel = new TimeTrackingModel(-1, year, month, day, shiftTotal);
                     Log.i(TOGGLE, timeTrackingModel.toString());
 
                     //check out todays shift data for user
