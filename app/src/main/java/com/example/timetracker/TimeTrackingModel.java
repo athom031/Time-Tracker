@@ -2,7 +2,6 @@ package com.example.timetracker;
 
 public class TimeTrackingModel {
     // ------------------- CLASS VARIABLES ------------------- \\
-    private int id;
     private int year;
     private int month;
     private int day;
@@ -12,9 +11,9 @@ public class TimeTrackingModel {
 
     /*  Parameterized Constructor
      *  @param int id, int year, int month, int day, String date, int minutesParams
+     *  @return VOID
      */
-    public TimeTrackingModel(int id, int year, int month, int day, int minutes) {
-        this.id = id;
+    public TimeTrackingModel(int year, int month, int day, int minutes) {
         this.year = year;
         this.month = month;
         this.day = day;
@@ -27,8 +26,6 @@ public class TimeTrackingModel {
 
     // ------------------------ GETTERS ----------------------- \\
 
-    public int getId() { return id; }
-
     public int getYear() { return year; }
 
     public int getMonth() { return month; }
@@ -38,8 +35,6 @@ public class TimeTrackingModel {
     public int getMinutes() { return minutes; }
 
     // ------------------------ SETTERS ----------------------- \\
-
-    public void setId(int id) { this.id = id; }
 
     public void setYear(int year) { this.year = year; }
 
@@ -55,7 +50,6 @@ public class TimeTrackingModel {
     @Override
     public String toString() {
         return "TimeTrackingModel{" +
-                "id=" + id +
                 ", year=" + year +
                 ", month=" + month +
                 ", day=" + day +

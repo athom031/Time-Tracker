@@ -6,6 +6,7 @@ import android.widget.CalendarView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -103,8 +104,6 @@ public class MainActivity extends AppCompatActivity {
                     int shiftTotal = (int) Math.floor(difference / MS_IN_MINUTE);
                     Log.i(TOGGLE, "This shift time: " + shiftTotal);
 
-                    //put shift for user in the table appropriately
-
                     String strToInt = sdf_str_to_int.format(new Date());
                     String[] strToIntSplit = strToInt.split("/");
 
@@ -114,9 +113,40 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.i(TOGGLE, day + " " + month +  " " + year);
 
-                    TimeTrackingModel timeTrackingModel = new TimeTrackingModel(-1, year, month, day, shiftTotal);
-                    Log.i(TOGGLE, timeTrackingModel.toString());
+                    TimeTrackingModel timeTrackingModel;
+                    try {
+                        timeTrackingModel = new TimeTrackingModel(year, month, day, shiftTotal);
+                        Log.i(TOGGLE, timeTrackingModel.toString());
+                    }
+                    catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "Error creating time track model", Toast.LENGTH_SHORT).show();
+                        timeTrackingModel = new TimeTrackingModel(0, 0, 0, 0);
+                    }
 
+                    //put shift for user in the table appropriately
+                    DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+
+                    //int minutesToAdd = dataBaseHelper.clockedMinutesToday(timeTrackingModel);
+                    //timeTrackingModel.setMinutes(minutesToAdd + timeTrackingModel.getMinutes());
+
+                    boolean success = dataBaseHelper.updateOnDuplicate(timeTrackingModel);
+
+                    if(success) {
+                        Log.i(TOGGLE, "successfully added data to db");
+                    }
+                    /*
+                    boolean success = dataBaseHelper.addOne(timeTrackingModel);
+
+                    if(success) {
+                        Log.i(TOGGLE, "successfully added row");
+                    } else {
+                        int minutesToAdd = dataBaseHelper.clockedMinutesToday(timeTrackingModel);
+                        timeTrackingModel.setMinutes(minutesToAdd + timeTrackingModel.getMinutes());
+                        success = dataBaseHelper.updateOne(timeTrackingModel);
+                        if(success) {
+                            Log.i(TOGGLE, "successfully updated row");
+                        }
+                    } */
                     //check out todays shift data for user
                 }
             }
