@@ -20,8 +20,7 @@ public class TimeTrackingModel {
         this.minutes = minutes;
     }
 
-    /*  Null Constructor
-     */
+    /*  Null Constructor */
     public TimeTrackingModel() {}
 
     // ------------------------ GETTERS ----------------------- \\
@@ -49,11 +48,7 @@ public class TimeTrackingModel {
      */
     @Override
     public String toString() {
-        return "TimeTrackingModel{" +
-                ", year=" + year +
-                ", month=" + month +
-                ", day=" + day +
-                ", minutes=" + minutes +
-                '}';
+        return String.format("TimeTrackingModel{year= %d, month= %d, minutes= %d, day= %d}",
+                             year, month, day, minutes);
     }
 }

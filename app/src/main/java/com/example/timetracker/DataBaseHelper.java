@@ -52,16 +52,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      *  @param SQLiteDatabase db, int oldVersion, int newVersion
      *  @return VOID
      *
-     *  if the database version number changes
-     *  this function will prevent the previous users app from breaking
-     *  when the database design changes
+     *  if the database version number changes this function will prevent the
+     *  previous users app from breaking when the database design changes
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
 
-    /*  add timeTrackingModel object values to db
+    /*  find minutes worked on specific date
      *  @param TimeTrackingModel timeTrackingModel
      *  @return int (# of minutes worked on that date)
      *
@@ -116,5 +115,4 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         return flag;
     }
-
 }

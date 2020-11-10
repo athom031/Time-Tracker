@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String SWITCH   = "SwitchChecker";
     private static final String DATE     = "DateChecker";
     private static final String MAIN     = "MainActivity";
+    private static final String SHIFT    = "ShiftCalculation";
+    private static final String DATABASE = "DatabaseMethod";
 
     // ------------------ DATE FORMATS ------------------- \\
     //SimpleDateFormat sdf_tt_date    = new SimpleDateFormat("dd MMM yyyy");
@@ -79,8 +81,16 @@ public class MainActivity extends AppCompatActivity {
         tt_calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
-                //month + 1
-                Log.i(CALENDAR, "" + year + (month + 1) + day);
+                //month passed in as array index so month + 1
+                Log.i(CALENDAR, String.format("Year: %d, Month: %d, Day: %d",
+                                              year, (month + 1), day));
+
+                DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+                TimeTrackingModel timeTrackingModel = new TimeTrackingModel(year, month + 1, day, 0);
+                int minutes = dataBaseHelper.clockedMinutesToday(timeTrackingModel);
+
+                Dialog dialog = new Dialog(year, month, day, minutes);
+                dialog.show(getSupportFragmentManager(), "Minutes worked alert dialog");
             }
         });
 
@@ -94,15 +104,15 @@ public class MainActivity extends AppCompatActivity {
                 String temp = sdf_log_checks.format(new Date());
                 if(isChecked) {
                     start_time_stamp = new Date();
-                    Log.i(TOGGLE, "Start Time: " + temp);
+                    Log.i(SHIFT, "Start Time: " + temp);
                 }
                 else  {
                     end_time_stamp = new Date();
-                    Log.i(TOGGLE, "Stop Timer: " + temp);
+                    Log.i(SHIFT, "Stop Timer: " + temp);
 
                     long difference = end_time_stamp.getTime() - start_time_stamp.getTime();
                     int shiftTotal = (int) Math.floor(difference / MS_IN_MINUTE);
-                    Log.i(TOGGLE, "This shift time: " + shiftTotal);
+                    Log.i(SHIFT, "This shift time: " + shiftTotal);
 
                     String strToInt = sdf_str_to_int.format(new Date());
                     String[] strToIntSplit = strToInt.split("/");
@@ -111,43 +121,24 @@ public class MainActivity extends AppCompatActivity {
                     int month = Integer.parseInt(strToIntSplit[1]);
                     int year  = Integer.parseInt(strToIntSplit[2]);
 
-                    Log.i(TOGGLE, day + " " + month +  " " + year);
-
                     TimeTrackingModel timeTrackingModel;
+
                     try {
                         timeTrackingModel = new TimeTrackingModel(year, month, day, shiftTotal);
-                        Log.i(TOGGLE, timeTrackingModel.toString());
                     }
                     catch (Exception e) {
                         Toast.makeText(MainActivity.this, "Error creating time track model", Toast.LENGTH_SHORT).show();
                         timeTrackingModel = new TimeTrackingModel(0, 0, 0, 0);
                     }
 
-                    //put shift for user in the table appropriately
+                    //Add shift data to table approaiately
                     DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-
-                    //int minutesToAdd = dataBaseHelper.clockedMinutesToday(timeTrackingModel);
-                    //timeTrackingModel.setMinutes(minutesToAdd + timeTrackingModel.getMinutes());
-
                     boolean success = dataBaseHelper.updateOnDuplicate(timeTrackingModel);
+                    if(success) { Log.i(DATABASE, "Successfully added data to db"); }
 
-                    if(success) {
-                        Log.i(TOGGLE, "successfully added data to db");
-                    }
-                    /*
-                    boolean success = dataBaseHelper.addOne(timeTrackingModel);
-
-                    if(success) {
-                        Log.i(TOGGLE, "successfully added row");
-                    } else {
-                        int minutesToAdd = dataBaseHelper.clockedMinutesToday(timeTrackingModel);
-                        timeTrackingModel.setMinutes(minutesToAdd + timeTrackingModel.getMinutes());
-                        success = dataBaseHelper.updateOne(timeTrackingModel);
-                        if(success) {
-                            Log.i(TOGGLE, "successfully updated row");
-                        }
-                    } */
-                    //check out todays shift data for user
+                    //Check out today work data for debugging
+                    int checkMinutes = dataBaseHelper.clockedMinutesToday(timeTrackingModel);
+                    Log.i(DATABASE, "Minutes worked today: " + checkMinutes);
                 }
             }
         });
@@ -169,11 +160,4 @@ public class MainActivity extends AppCompatActivity {
            }
         });
     }
-
-    //create dialog with values in on selected day change function
-    public void openDialog(String d, String m, String y, String key, int value) {
-        Dialog dialog = new Dialog(d, m, y, key, value);
-        dialog.show(getSupportFragmentManager(), "example dialog");
-    }
-
 }
