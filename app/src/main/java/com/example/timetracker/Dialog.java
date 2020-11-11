@@ -43,7 +43,7 @@ public class Dialog extends AppCompatDialogFragment {
         title = String.format("Time tracked on %s %s %s", d, m, y);
 
         if(minutes == 0) {
-            message = "You have not yet logged time for this day.";
+            message = "You have not yet logged time for this day";
         } else {
             int h = (int) Math.floor(minutes / 60);
             int min = minutes % 60;

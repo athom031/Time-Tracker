@@ -5,19 +5,19 @@
             <solid
                 android:color="#FFD3D3D3" />
             <stroke
-                android:width="3dp"
+                android:width="2dp"
                 android:color="#33D82530" />
             <corners
-                android:radius="20dp" />
+                android:radius="15dp" />
         </shape>
     </item>
     <item>
         <shape>
             <stroke
-                android:width="3dp"
+                android:width="2dp"
                 android:color="#FFD82530" />
             <corners
-                android:radius="20dp" />
+                android:radius="15dp" />
         </shape>
     </item>
 </selector>
