@@ -40,7 +40,7 @@ public class Dialog extends AppCompatDialogFragment {
         String m = months[month];
         String d = (day < 10) ? "0" + day : "" + day;
 
-        title = String.format("Time tracked on %s %s %s", d, m, y);
+        title = String.format("Time tracked on %s %s %s",  d, m, y);
 
         if(minutes == 0) {
             message = "You have not yet logged time for this day";

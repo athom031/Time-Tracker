@@ -49,6 +49,6 @@ public class TimeTrackingModel {
     @Override
     public String toString() {
         return String.format("TimeTrackingModel{year= %d, month= %d, minutes= %d, day= %d}",
-                             year, month, day, minutes);
+                year, month, day, minutes);
     }
 }

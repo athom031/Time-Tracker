@@ -3,15 +3,18 @@ package com.example.timetracker;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+
 import android.os.Bundle;
+
 import android.util.Log;
+
 import android.widget.CalendarView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.hardware.SensorManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,14 +22,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     // ------------------- REFERENCES ------------------- \\
     //  references buttons and other controls on layout   \\
-    ToggleButton tt_toggle;
-    CalendarView tt_calendar;
-    Switch tt_switch;
+    ToggleButton ttToggle;
+    CalendarView ttCalendar;
+    Switch ttSwitch;
     //TextView tt_date;
 
     // ------------------- CONSTANTS ------------------- \\
@@ -44,23 +46,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // ------------------ DATE FORMATS ------------------- \\
     //SimpleDateFormat sdf_tt_date    = new SimpleDateFormat("dd MMM yyyy");
-    SimpleDateFormat sdf_log_checks = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-    SimpleDateFormat sdf_str_to_int = new SimpleDateFormat("dd/MM/yyyy");
+    SimpleDateFormat sdfLogChecks = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+    SimpleDateFormat sdfStrToInt = new SimpleDateFormat("dd/MM/yyyy");
 
     // ---------------- TIMING VARIABLES ----------------- \\
-    public Date start_time_stamp;
-    public Date end_time_stamp;
+    public Date startTimeStamp;
+    public Date endTimeStamp;
 
     // --------------- UPDATE CURRENT DATE ---------------- \\
-    private TextView tt_date;
-    private Calendar calendar;
-    private SimpleDateFormat sdf_tt_date;
-    private String date;
+    private TextView ttDate;
+    private Calendar ttDateCalendar;
+    private SimpleDateFormat sdf_ttDate;
+    private String ttDateStr;
 
     // ----------------- SHAKE RESOURCES ------------------ \\
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
-    public boolean shake_flag;
+    public boolean isShakeSwitchOn;
     private boolean isAccelerometerAvailable;
     private boolean isNotFirstTime = false;
     private float currX, currY, currZ;
@@ -68,40 +70,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float xDiff, yDiff, zDiff;
     private float shakeThreshold = 5f;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tt_toggle = findViewById(R.id.tt_toggle);
-        tt_calendar = findViewById(R.id.tt_calendar);
-        tt_switch = findViewById(R.id.tt_switch);
-        tt_date = findViewById(R.id.tt_date);
+        ttToggle = findViewById(R.id.tt_toggle);
+        ttCalendar = findViewById(R.id.tt_calendar);
+        ttSwitch = findViewById(R.id.tt_switch);
+        ttDate = findViewById(R.id.tt_date);
 
         /*  Handle date text view, update as date changes in real time
          *  make use of static variables for instances of the class not class itself
          *  => layout reference: tt_date
          */
-        calendar = Calendar.getInstance();
-        sdf_tt_date = new SimpleDateFormat("dd MMM yyyy");
-        date = sdf_tt_date.format(calendar.getTime());
-        Log.i(DATE, date);
-        tt_date.setText(date);
+        ttDateCalendar = Calendar.getInstance();
+        sdf_ttDate = new SimpleDateFormat("dd MMM yyyy");
+        ttDateStr = sdf_ttDate.format(ttDateCalendar.getTime());
+        Log.i(DATE, ttDateStr);
+        ttDate.setText(ttDateStr);
 
         /*  Handle CalendarView when date is selected
          *  will call openDialog function to alert user to shift time table
          *  => layout reference: tt_calendar
          */
-        tt_calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        ttCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
                 //month passed in as array index so month + 1
                 Log.i(CALENDAR, String.format("Year: %d, Month: %d, Day: %d",
-                                              year, (month + 1), day));
+                        year, (month + 1), day));
 
                 DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
                 TimeTrackingModel timeTrackingModel = new TimeTrackingModel(year, month + 1, day, 0);
@@ -116,23 +115,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
          *  will add shift data to database after being toggled off
          *  => layout reference: tt_toggle
          */
-        tt_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ttToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String temp = sdf_log_checks.format(new Date());
+                String temp = sdfLogChecks.format(new Date());
                 if(isChecked) {
-                    start_time_stamp = new Date();
+                    startTimeStamp = new Date();
                     Log.i(SHIFT, "Start Time: " + temp);
                 }
                 else  {
-                    end_time_stamp = new Date();
+                    endTimeStamp = new Date();
                     Log.i(SHIFT, "Stop Timer: " + temp);
 
-                    long difference = end_time_stamp.getTime() - start_time_stamp.getTime();
+                    long difference = endTimeStamp.getTime() - startTimeStamp.getTime();
                     int shiftTotal = (int) Math.floor(difference / MS_IN_MINUTE);
                     Log.i(SHIFT, "This shift time: " + shiftTotal);
 
-                    String strToInt = sdf_str_to_int.format(new Date());
+                    String strToInt = sdfStrToInt.format(new Date());
                     String[] strToIntSplit = strToInt.split("/");
 
                     int day   = Integer.parseInt(strToIntSplit[0]);
@@ -166,18 +165,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
          *  will operate same as start/stop toggle
          *  => layout reference: tt_date
          */
-        tt_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ttSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     Log.i(SWITCH, "Shake has been activated.");
-                    shake_flag = true;
+                    isShakeSwitchOn = true;
                 }
                 else {
                     Log.i(SWITCH, "Shake has been deactivated.");
-                    shake_flag = false;
+                    isShakeSwitchOn = false;
                 }
-           }
+            }
         });
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -209,8 +208,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     (yDiff > shakeThreshold && zDiff > shakeThreshold) ||
                     (xDiff > shakeThreshold && zDiff > shakeThreshold)) {
                 Log.i(SHAKE, "Shake has been detected");
-                if(shake_flag) {
-                    tt_toggle.performClick();
+                if(isShakeSwitchOn) {
+                    ttToggle.performClick();
                     Log.i(SHAKE, "Perform click through shake");
                 }
             }
